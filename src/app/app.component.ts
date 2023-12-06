@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,23 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'moodmusic-frontend';
+  isLoggedIn = false;
+  isGuest = true;
+
+  constructor(private authService: AuthService) {
+    this.authService.getIsLoggedIn().subscribe(loggedIn => {
+      this.isLoggedIn = loggedIn;
+    });
+
+    this.authService.getIsGuest().subscribe(guest => {
+      this.isGuest = guest;
+    });
+  }
+
+  // In AppComponent
+  logout() {
+    // Perform logout logic...
+    this.authService.setIsLoggedIn(false);
+    this.authService.setIsGuest(true);
+  }
 }

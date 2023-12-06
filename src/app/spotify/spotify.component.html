@@ -1,0 +1,19 @@
+<!-- spotify.component.html -->
+<div class="spotify-player">
+    <button (click)="fetchSongs()">Fetch Songs Based on Mood</button>
+    <div *ngIf="songs.length">
+      <img [src]="songs[currentSongIndex]['album_art_url']" alt="song name : songs[currentSongIndex]['name']" height="200" width="200">
+      <h3>Now Playing: {{ songs[currentSongIndex]["name"] }}</h3>
+      <p>Artist: {{ songs[currentSongIndex]["artists"] }}</p>
+      <button *ngIf="currentSongIndex > 0" (click)="prevSong()">Prev</button>
+      <button (click)="togglePlay()">Play/Pause</button>
+      <button *ngIf="currentSongIndex < 9" (click)="nextSong()">Next</button>
+      <p *ngIf="player_state != null">{{ currentPos}}</p>
+      <p *ngIf="player_state != null">{{ endPos}}</p>
+    </div>
+  
+    <div *ngIf="!songs.length">
+      <p>No songs available. Please refresh.</p>
+    </div>
+  </div>
+  

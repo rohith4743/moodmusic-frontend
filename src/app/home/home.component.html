@@ -1,0 +1,36 @@
+<div class="home-container">
+  <div class="input-section">
+
+    <!-- Camera Capture and Image Display -->
+    <div class="camera-section">
+      <video #videoElement width="320" height="240"></video>
+      <button (click)="captureImage()">Capture Image</button>
+    </div>
+
+    <!-- Image Upload -->
+    <div class="upload-section">
+      <input type="file" (change)="fileInputChange($event)" accept="image/*">
+      <img width="320" height="240" [src]="uploadedImageUrl" *ngIf="uploadedImageUrl" class="uploaded-image">
+      <div *ngIf="mood">The mood is: {{ mood }}</div>
+    </div>
+
+    
+
+    <!-- Mood Selection -->
+    <div class="mood-selector">
+      <select (change)="selectChange($event)">
+        <option value="">Select Mood</option>
+        <option value="happy">Happy</option>
+        <option value="sad">Sad</option>
+        <!-- Add more mood options here -->
+      </select>
+    </div>
+    
+  </div>
+
+  <div class="output-section">
+    <!-- Spotify Integration will go here -->
+    <!-- <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/64oM9dBfB4TKqMtwSdoduu?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> -->
+    <app-spotify></app-spotify>
+  </div>
+</div>

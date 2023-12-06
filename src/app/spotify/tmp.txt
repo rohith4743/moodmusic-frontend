@@ -1,0 +1,136 @@
+// spotify.component.ts
+import { Component, OnInit } from '@angular/core';
+import { Mood } from '../types/global.types';
+import { MusicRecommendationService } from '../music-recommendation.service';
+
+declare var Spotify: any;
+interface SpotifyPlayerReadyEvent {
+  device_id: string;
+}
+type CallbackFunction = (accessToken: string) => void;
+interface PlayParameters {
+  spotify_uri: string;
+  playerInstance: {
+      _options: {
+          getOAuthToken: (callback: (token: string) => void) => void;
+          id: string;
+      }
+  }
+}
+
+interface SpotifyPlayerOptions {
+  getOAuthToken: (callback: (token: string) => void) => void;
+  id: string;
+}
+
+interface SpotifyPlayerInstance {
+  _options: SpotifyPlayerOptions;
+}
+
+interface PlayFunctionParams {
+  spotify_uri: string;
+  playerInstance: SpotifyPlayerInstance;
+}
+
+
+
+
+@Component({
+  selector: 'app-spotify',
+  templateUrl: './spotify.component.html',
+  styleUrls: ['./spotify.component.css']
+})
+export class SpotifyComponent implements OnInit {
+  songs = [];
+  currentSongIndex: number = 0;
+  mood: Mood = "HAPPY"; 
+  accessToken: string = '';
+  player: any;
+  deviceID:string = '';
+
+  constructor(private musicService: MusicRecommendationService){}
+
+  fetchSongs(): void {
+    this.musicService.getSongsByMood(this.mood).subscribe(
+      (data) => {
+        this.songs = data['tracks'];
+        this.accessToken = data['access_token'];
+        console.log(this.songs)
+        // Handle the data as needed, e.g., set the current song, etc.
+      },
+      error => {
+        console.error('Error fetching songs:', error);
+      }
+    );
+  }
+
+  ngOnInit(): void {
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      this.initializeSpotifyPlayer();
+    };
+  }
+
+  initializeSpotifyPlayer() {
+    this.player = new Spotify.Player({
+      name: 'Web Playback SDK Quick Start Player',
+      getOAuthToken: (cb : CallbackFunction) => { cb(this.accessToken); }
+    });
+
+    // Ready
+    this.player.addListener('ready', ({ device_id } : SpotifyPlayerReadyEvent) => {
+      console.log('Ready with Device ID', device_id);
+      this.deviceID = device_id;
+      this.playSong(); // Optional: Automatically start playing a song
+    });
+
+    // Connect to the player!
+    this.player.connect();
+  }
+
+  playSong() {
+    const play = ({
+        spotify_uri,
+        playerInstance: {
+            _options: {
+                getOAuthToken,
+                id
+            }
+        }
+    }: PlayFunctionParams) => {
+        // Type for the callback parameter in getOAuthToken
+        getOAuthToken((access_token: string) => {
+            fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({ uris: [spotify_uri] }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${access_token}`
+                },
+            });
+        });
+    };
+
+    play({
+        playerInstance: this.player,
+        spotify_uri: this.songs[this.currentSongIndex]["uri"],
+    });
+}
+
+
+
+  // playSong(index: number): void {
+  //   // Logic to play the song at the given index
+  // }
+
+  nextSong(): void {
+    // Logic to play the next song
+  }
+
+  previousSong(): void {
+    // Logic to play the previous song
+  }
+
+  refreshSongs(): void {
+    // Logic to refresh the song list
+  }
+}
