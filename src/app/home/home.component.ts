@@ -121,7 +121,8 @@ export class HomeComponent implements OnInit {
     return ['SAD', 'CONFUSED', 'DISGUSTED', 'ANGRY', 'SURPRISED', 'FEAR', 'CALM', 'HAPPY', ''].includes(mood);
   }
 
-  selectMood() {
+  selectMood(selectedMood: Mood) {
+    this.mood = selectedMood
       this.spotifyComponent.fetchSongs();
   }
   

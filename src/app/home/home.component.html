@@ -47,8 +47,8 @@
       </div> -->
 
       <div class="mood-selector">
-        <mat-radio-group aria-label="Mood selection" [(ngModel)]="mood" (change)="selectMood()">
-          <mat-radio-button *ngFor="let moodItem of moodItems" [value]="moodItem.value">
+        <mat-radio-group aria-label="Mood selection" [(ngModel)]="mood" >
+          <mat-radio-button *ngFor="let moodItem of moodItems" [value]="moodItem.value" (click)="selectMood(moodItem.value)">
             {{ moodItem.name }} {{ moodItem.icon }}
           </mat-radio-button>
         </mat-radio-group>
