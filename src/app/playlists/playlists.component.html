@@ -31,16 +31,12 @@
               [attr.id]="'accordion-body-' + i"
               [attr.aria-labelledby]="'accordion-header-' + i">
               <div class="player-controls">
-                <button mat-icon-button *ngIf="currentSongIndex > 0" (click)="prevSong()" color="primary">
-                  <mat-icon>skip_previous</mat-icon>
-                </button>
+                
                 <button mat-icon-button (click)="togglePlay(i)">
                   <mat-icon *ngIf="nowPlaying!=i">{{ 'play_arrow' }}</mat-icon>
                   <mat-icon *ngIf="nowPlaying==i">{{ player_state ? 'pause' : 'play_arrow' }}</mat-icon>
                 </button>
-                <button mat-icon-button *ngIf="currentSongIndex < songs.length - 1" (click)="nextSong()">
-                  <mat-icon>skip_next</mat-icon>
-                </button>
+               
               </div>
             </div>
           </cdk-accordion-item>

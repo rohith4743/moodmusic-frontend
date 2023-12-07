@@ -13,6 +13,7 @@
         <video #videoElement width="260" height="200"></video>
         <button mat-raised-button color="primary" (click)="captureImage()">Capture Image</button>
         <img width="320" height="240" [src]="uploadedImageUrl" *ngIf="uploadedImageUrl" class="uploaded-image">
+        <div *ngIf="mood">The mood is: {{ mood }}</div>
       </div>
     </mat-expansion-panel>
   
