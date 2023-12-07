@@ -12,7 +12,7 @@ export class LoginComponent {
 
   email = '';
   password = '';
-
+  errorMessage : string | null = null;
   constructor(private authService: AuthService, private router: Router, private storageService : StoragesessionService) {}
 
   onLogin() {
@@ -23,6 +23,8 @@ export class LoginComponent {
           success => {
             this.storageService.saveUser(this.email, this.password);
             console.log('Navigation success:', success); 
+            this.authService.setIsGuest(false);
+            this.authService.setIsLoggedIn(true);
             this.router.navigate(['/'])
           },
           err => console.error('Navigation error:', err)
@@ -30,6 +32,7 @@ export class LoginComponent {
       },
       error => {
         console.error('Login error:', error);
+        this.errorMessage = "Login Failed / Invalid Credentials";
         // Handle login error (e.g., show an error message)
       }
     );
