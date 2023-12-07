@@ -33,8 +33,6 @@ export class AuthService {
       'username' : username,
       'password' : password
     }
-    this.isLoggedIn.next(true);
-    this.isGuest.next(false);
     return this.http.post(`${apiUrl}/moodmusic/login/`, userData);
   }
 
