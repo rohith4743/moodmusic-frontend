@@ -1,6 +1,13 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MusicRecommendationService } from '../music-recommendation.service';
 import { Mood } from '../types/global.types';
+import { SpotifyComponent } from '../spotify/spotify.component';
+
+interface MoodItem {
+  name: string;
+  value: Mood;
+  icon: string;
+}
 
 @Component({
   selector: 'app-home',
@@ -8,10 +15,23 @@ import { Mood } from '../types/global.types';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+
   songs: string[] = [];
   mood: Mood = '';
   @ViewChild('videoElement') videoElement: ElementRef | undefined;
+  @ViewChild(SpotifyComponent) spotifyComponent: any;
   uploadedImageUrl: string | ArrayBuffer | null = null;
+
+  moodItems: MoodItem[] = [
+    { name: 'SAD', value: "SAD", icon: '😢' },
+    { name: 'CONFUSED', value: 'CONFUSED', icon: '😕' },
+    { name: 'DISGUSTED', value: 'DISGUSTED', icon: '🤢' },
+    { name: 'ANGRY', value: 'ANGRY', icon: '😠' },
+    { name: 'SURPRISED', value: 'SURPRISED', icon: '😲' },
+    { name: 'FEAR', value: 'FEAR', icon: '😨' },
+    { name: 'CALM', value: 'CALM', icon: '😌' },
+    { name: 'HAPPY', value: 'HAPPY', icon: '😃' }
+  ];
 
 
   constructor(private musicService: MusicRecommendationService, private cdRef: ChangeDetectorRef) {}
@@ -85,7 +105,7 @@ export class HomeComponent implements OnInit {
           if (this.isValidMood(apiMood)) {
             this.mood = apiMood as Mood; // Type assertion here
             this.cdRef.detectChanges(); // Update the view with the new mood
-            this.fetchSongs(); // Fetch songs based on the detected mood
+            this.spotifyComponent.fetchSongs(); // Fetch songs based on the detected mood
           } else {
             console.error('Invalid mood received from API:', apiMood);
           }
@@ -100,6 +120,10 @@ export class HomeComponent implements OnInit {
   private isValidMood(mood: any): mood is Mood {
     return ['SAD', 'CONFUSED', 'DISGUSTED', 'ANGRY', 'SURPRISED', 'FEAR', 'CALM', 'HAPPY', ''].includes(mood);
   }
+
+  selectMood() {
+      this.spotifyComponent.fetchSongs();
+  }
   
 
   processImage(file: File) {
@@ -107,31 +131,10 @@ export class HomeComponent implements OnInit {
     reader.onloadend = () => {
       this.uploadedImageUrl = reader.result;
       this.cdRef.detectChanges();
-      
-      // Send the image file to the API after it is fully loaded
       this.sendImageToApi(file);
     };
     reader.readAsDataURL(file);
   }
   
-
-  selectChange(event: Event) {
-    const select = event.target as HTMLSelectElement;
-    if (select) {
-      this.onSelectMood(select.value as Mood);
-    }
-  }
-  
-
-  onSelectMood(mood: Mood) {
-    this.mood = mood;
-    this.fetchSongs();
-  }
-
-  fetchSongs() {
-    this.musicService.getSongsByMood(this.mood).subscribe(songs => {
-      this.songs = songs;
-    });
-  }
 
 }

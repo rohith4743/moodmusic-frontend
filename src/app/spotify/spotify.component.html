@@ -1,19 +1,62 @@
 <!-- spotify.component.html -->
-<div class="spotify-player">
-    <button (click)="fetchSongs()">Fetch Songs Based on Mood</button>
-    <div *ngIf="songs.length">
-      <img [src]="songs[currentSongIndex]['album_art_url']" alt="song name : songs[currentSongIndex]['name']" height="200" width="200">
-      <h3>Now Playing: {{ songs[currentSongIndex]["name"] }}</h3>
-      <p>Artist: {{ songs[currentSongIndex]["artists"] }}</p>
-      <button *ngIf="currentSongIndex > 0" (click)="prevSong()">Prev</button>
-      <button (click)="togglePlay()">Play/Pause</button>
-      <button *ngIf="currentSongIndex < 9" (click)="nextSong()">Next</button>
-      <p *ngIf="player_state != null">{{ currentPos}}</p>
-      <p *ngIf="player_state != null">{{ endPos}}</p>
-    </div>
-  
-    <div *ngIf="!songs.length">
-      <p>No songs available. Please refresh.</p>
-    </div>
+
+
+  <div class="music-player" *ngIf="songs.length"  >
+
+    <mat-card class="outer-card" >
+      
+        
+        <img mat-card-image [src]="songs[currentSongIndex]['album_art_url']" [alt]='songs[currentSongIndex]["name"]'>
+        <mat-card-header>
+          <mat-card-title class="marquee">
+            <div class="marquee-content">Now Playing: {{ songs[currentSongIndex]["name"] }}</div>
+          </mat-card-title>
+          <mat-card-subtitle>{{songs[currentSongIndex]["artists"]}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-slider min="0" [max]="slider_max" step="1">
+            <input matSliderThumb [(value)] = "slider_present" (valueChange)="seek($event)">
+          </mat-slider>
+          <div class="player-controls">
+            <button mat-icon-button *ngIf="isLoggedIn" (click)="add_to_Favourite()">
+              <mat-icon>add_circle</mat-icon>
+              <!-- <mat-icon>check_circle</mat-icon> -->
+            </button>
+            <button mat-icon-button *ngIf="currentSongIndex > 0" (click)="prevSong()" color="primary">
+              <mat-icon>skip_previous</mat-icon>
+            </button>
+            <button mat-icon-button (click)="togglePlay()">
+              <mat-icon>{{ player_state ? 'pause' : 'play_arrow' }}</mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="currentSongIndex < songs.length - 1" (click)="nextSong()">
+              <mat-icon>skip_next</mat-icon>
+            </button>
+            <button mat-icon-button (click)="fetchSongs()">
+              <mat-icon>refresh</mat-icon>
+            </button>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <div>{{ currentPos }}</div>
+          <div>{{ endPos }}</div>
+        </mat-card-actions>
+ 
+    </mat-card>
+
+    <mat-card class="plalist-panel outer-card">
+      <mat-selection-list [multiple]="false">
+        <mat-list-item *ngFor="let song of songs; let i = index">
+          <mat-card class="playlist-card">
+            <mat-card-header>
+              <mat-card-title-group>
+                <mat-card-title>{{song["name"]}}</mat-card-title>
+                <mat-card-subtitle>{{song["artists"]}}</mat-card-subtitle>
+                <img mat-card-md-image [src]="song['album_art_url']"  [alt]="song['name']" width="60" height="60">
+              </mat-card-title-group>
+            </mat-card-header>
+          </mat-card>
+        </mat-list-item>
+      </mat-selection-list>
+    </mat-card>
+
   </div>
-  

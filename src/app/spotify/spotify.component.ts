@@ -1,8 +1,9 @@
 // spotify.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Mood } from '../types/global.types';
 import { MusicRecommendationService } from '../music-recommendation.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { AuthService } from '../auth.service';
 
 declare var Spotify:any;
 
@@ -12,10 +13,17 @@ declare var Spotify:any;
   styleUrls: ['./spotify.component.css']
 })
 export class SpotifyComponent implements OnInit {
+  isLoggedIn: any;
 
+
+  slider_max = 100;
+  slider_present = 25;
+  currentSong: any;
+
+  @Input() mood:Mood = '';
   songs = [];
   currentSongIndex: number = 0;
-  mood: Mood = "HAPPY"; 
+  
   accessToken: string = '';
   player: any;
 
@@ -28,7 +36,7 @@ export class SpotifyComponent implements OnInit {
   endPos: any;
 
 
-  constructor(private musicService: MusicRecommendationService, private formBuilder: FormBuilder){}
+  constructor(private musicService: MusicRecommendationService, private formBuilder: FormBuilder, private authService : AuthService){}
 
   fetchSongs(): void {
     this.musicService.getSongsByMood(this.mood).subscribe(
@@ -37,6 +45,8 @@ export class SpotifyComponent implements OnInit {
         this.accessToken = data['access_token'];
         this.connectPlayer()
         this.player_state = null;
+        this.slider_max = Math.floor(this.songs[this.currentSongIndex]['duration']/1000)
+        this.slider_present = Math.floor(0)
       },
       error => {
         console.error('Error fetching songs:', error);
@@ -46,6 +56,10 @@ export class SpotifyComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+    this.authService.getIsLoggedIn().subscribe(loggedIn => {
+      this.isLoggedIn = loggedIn;
+    });
 
     (<any>window).onSpotifyWebPlaybackSDKReady = this.connectPlayer.bind(this);
 
@@ -203,10 +217,47 @@ export class SpotifyComponent implements OnInit {
         console.error('User is not playing music through the Web Playback SDK');
         return;
       }
+      this.slider_max = Math.floor(this.songs[this.currentSongIndex]['duration']/1000)
+      this.slider_present = Math.floor(state.position / 1000)
       this.currentPos = this.formatTime(state.position)
       this.endPos = this.formatTime(this.songs[this.currentSongIndex]['duration'])
     });
   }
+
+    seek(pos: number) {
+      this.player.seek(pos*1000);
+    }
+
+    // setCurrentSong(index: number) {
+    //   this.currentSongIndex = index;
+    //   // Additional logic for when a song is selected
+    // }
+
+    setCurrentSong(index: number) {
+      if (this.currentSongIndex === index) {
+        this.togglePlay();
+      } else {
+        this.currentSongIndex = index;
+        // Logic to play the selected song
+      }
+    }
+  
+    // togglePlay(index: number) {
+    //   if (this.currentSongIndex !== index) {
+    //     this.currentSongIndex = index;
+    //   }
+    //   this.player_state = !this.player_state;
+    //   // Your logic to play or pause the song
+    // }
+  
+    calculateProgress(song: any): number {
+      // Logic to calculate the song's current progress percentage
+      return (song.currentTime / song.duration) * 100;
+    }
+
+    add_to_Favourite() {
+      throw new Error('Method not implemented.');
+      }
 
 
 }

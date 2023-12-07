@@ -10,21 +10,6 @@ import { Mood } from './types/global.types';
   providedIn: 'root'
 })
 export class MusicRecommendationService {
-  private songs = {
-    'HAPPY': ['Song 1', 'Song 2', 'Song 3'],
-    'SAD': ['Song 4', 'Song 5', 'Song 6'],
-    // Add song arrays for the other moods
-    'CONFUSED': ['Song 7', 'Song 8', 'Song 9'],
-    'DISGUSTED': ['Song 7', 'Song 8', 'Song 9'],
-    'ANGRY': ['Song 7', 'Song 8', 'Song 9'],
-    'SURPRISED': ['Song 7', 'Song 8', 'Song 9'],
-    'FEAR': ['Song 7', 'Song 8', 'Song 9'],
-    'CALM': ['Song 7', 'Song 8', 'Song 9'],
-    '': []  // Keep this for no mood
-  };
-
-  
-  
 
   constructor(private http: HttpClient) { }
 

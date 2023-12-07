@@ -1,0 +1,60 @@
+.playlist-card {
+    height: 70px;
+}
+
+mat-list-item {
+    height: 80px !important;
+}
+
+/* In your stylesheet */
+.music-player {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping if the container width is not enough */
+    gap: 16px; /* Optional: adds space between cards */
+    justify-content: space-around; /* Optional: for alignment and spacing around items */
+  }
+  
+  .outer-card{
+    flex: 1; /* Each card will grow to fill the container */
+    min-width: 200px !important; /* Minimum width of each card, adjust as needed */
+    max-width: calc(50% - 16px); /* Adjust the max-width for the gap if used */
+  }
+
+  mat-slider {
+    width: 100%;
+  }
+  
+  mat-card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .marquee {
+    height: 25px;
+    width: 420px;
+  
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .marquee div {
+    display: block;
+    width: 200%;
+    height: 30px;
+  
+    position: absolute;
+    overflow: hidden;
+  
+    animation: marquee 8s linear infinite;
+  }
+  
+  .marquee span {
+    float: left;
+    width: 50%;
+  }
+  
+  @keyframes marquee {
+    0% { left: 0; }
+    100% { left: -100%; }
+  }

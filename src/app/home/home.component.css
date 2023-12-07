@@ -7,6 +7,10 @@
     flex: 1;
     padding: 20px;
   }
+
+  .input-section {
+    max-width: 300px;
+  }
   
   .mood-selector select {
     width: 100%;
@@ -43,4 +47,8 @@
   button:hover {
     background-color: #0056b3;
   }
-  
+
+  mat-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+  }
