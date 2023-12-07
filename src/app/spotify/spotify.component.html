@@ -45,13 +45,13 @@
 
     <mat-card class="plalist-panel outer-card">
       <mat-selection-list [multiple]="false">
-        <mat-list-item *ngFor="let song of songs; let i = index">
+        <mat-list-item *ngFor="let song of songs; let i = index" (click)="selectSong(i)">
           <mat-card class="playlist-card">
             <mat-card-header>
               <mat-card-title-group>
                 <mat-card-title>{{song["name"]}}</mat-card-title>
                 <mat-card-subtitle>{{song["artists"]}}</mat-card-subtitle>
-                <img mat-card-md-image [src]="song['album_art_url']"  [alt]="song['name']" width="60" height="60">
+                <img mat-card-md-image [src]="song['album_art_url']"  [alt]="song['name']" width="40" height="40">
               </mat-card-title-group>
             </mat-card-header>
           </mat-card>

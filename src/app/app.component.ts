@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from './auth.service';
+import { StoragesessionService } from './storagesession.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ export class AppComponent {
   isLoggedIn = false;
   isGuest = true;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private storageService : StoragesessionService) {
     this.authService.getIsLoggedIn().subscribe(loggedIn => {
       this.isLoggedIn = loggedIn;
     });
@@ -25,5 +26,6 @@ export class AppComponent {
     // Perform logout logic...
     this.authService.setIsLoggedIn(false);
     this.authService.setIsGuest(true);
+    this.storageService.clearUser();
   }
 }

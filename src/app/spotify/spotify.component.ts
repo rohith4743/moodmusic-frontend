@@ -13,6 +13,7 @@ declare var Spotify:any;
   styleUrls: ['./spotify.component.css']
 })
 export class SpotifyComponent implements OnInit {
+
   isLoggedIn: any;
 
 
@@ -228,10 +229,6 @@ export class SpotifyComponent implements OnInit {
       this.player.seek(pos*1000);
     }
 
-    // setCurrentSong(index: number) {
-    //   this.currentSongIndex = index;
-    //   // Additional logic for when a song is selected
-    // }
 
     setCurrentSong(index: number) {
       if (this.currentSongIndex === index) {
@@ -242,13 +239,6 @@ export class SpotifyComponent implements OnInit {
       }
     }
   
-    // togglePlay(index: number) {
-    //   if (this.currentSongIndex !== index) {
-    //     this.currentSongIndex = index;
-    //   }
-    //   this.player_state = !this.player_state;
-    //   // Your logic to play or pause the song
-    // }
   
     calculateProgress(song: any): number {
       // Logic to calculate the song's current progress percentage
@@ -256,8 +246,24 @@ export class SpotifyComponent implements OnInit {
     }
 
     add_to_Favourite() {
-      throw new Error('Method not implemented.');
-      }
+      const data = {
+        "song" : this.songs[this.currentSongIndex]
+      };
+      this.musicService.add_to_playlist(data).subscribe(
+        response => {
+          console.log("fetched successfully")
+        }, error => {
+          console.error("error fetching songs", error)
+        }
+      )
+    }
+
+    selectSong(num: number) {
+      this.currentSongIndex  = num;
+      this.player.pause();
+      this.player_state = null;
+      this.togglePlay()
+    }
 
 
 }
